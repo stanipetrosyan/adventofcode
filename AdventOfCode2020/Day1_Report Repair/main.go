@@ -18,43 +18,28 @@ func main() {
 	}
 
 	sort.Ints(lines)
-	solvePartOne(lines)
-	solvePartTwo(lines)
+	println(solvePartOne(lines, 0, len(lines)-1))
+	println(solvePartTwo(lines, 0, 1, len(lines)-1))
 }
 
-func solvePartOne(numbers []int) {
-	start := 0
-	end := len(numbers) - 1
-
-	for (numbers[start] + numbers[end]) != PROBLEM {
-		if (numbers[start] + numbers[end]) > PROBLEM {
-			end--
-		} else {
-			start++
-		}
+func solvePartOne(numbers []int, start int, end int) int {
+	if (numbers[start] + numbers[end]) == PROBLEM {
+		return numbers[end] * numbers[start]
 	}
-
-	println(numbers[end] * numbers[start])
+	if (numbers[start] + numbers[end]) > PROBLEM {
+		return solvePartOne(numbers, start, end-1)
+	}
+	return solvePartOne(numbers, start+1, end)
 }
 
-func solvePartTwo(numbers []int) {
-	start := 0
-	middle := 1
-	end := len(numbers) - 1
-
-	for (numbers[start] + numbers[middle] + numbers[end]) != PROBLEM {
-		if (numbers[start] + numbers[middle] + numbers[end]) > PROBLEM {
-			end--
-		} else {
-			for (numbers[start] + numbers[middle] + numbers[end]) < PROBLEM {
-				middle++
-			}
-			start++
-			middle = start + 1
-		}
+func solvePartTwo(numbers []int, start int, middle int, end int) int {
+	if (numbers[start] + numbers[middle] + numbers[end]) == PROBLEM {
+		return numbers[start] * numbers[middle] * numbers[end]
 	}
-
-	println(numbers[end] * numbers[middle] * numbers[start])
+	if (numbers[start] + numbers[middle] + numbers[end]) > PROBLEM {
+		return solvePartTwo(numbers, start, middle, end-1)
+	}
+	return solvePartTwo(numbers, start+1, start+2, end)
 }
 
 func convertToIntLines(path string) ([]int, error) {
