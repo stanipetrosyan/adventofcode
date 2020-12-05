@@ -5,11 +5,6 @@ import (
 	"log"
 )
 
-type Position struct {
-	x int
-	y int
-}
-
 func main() {
 	lines, err := util.ReadLines("./input.txt")
 
@@ -19,7 +14,6 @@ func main() {
 
 	solvePartOne(lines)
 	solvePartTwo(lines)
-
 }
 
 func solvePartOne(lines []string) {
