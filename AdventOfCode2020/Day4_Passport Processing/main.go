@@ -8,16 +8,7 @@ import (
 )
 
 type Passport struct {
-	complete []string
-	byr      string
-	iyr      string
-	eyr      string
-	hgt      string
-	hcl      string
-	ecl      string
-	pid      string
-	cid      string
-	fields   map[string]string
+	fields map[string]string
 }
 
 func main() {
@@ -41,8 +32,8 @@ func solvePartOne(lines []string) {
 			passportString = passportString + " " + line
 		} else {
 			passport := Passport{}
-			//passport.passportSerialization(passportString)
-			if passport.isValid(passportString) {
+			passport.passportSerialization(passportString)
+			if passport.isValid() {
 				solution++
 			}
 			passportString = ""
@@ -61,10 +52,8 @@ func solvePartTwo(lines []string) {
 		} else {
 			passport := Passport{}
 			passport.passportSerialization(passportString)
-			if passport.isValid(passportString) {
-				if passport.isStrictValid() {
-					solution++
-				}
+			if passport.isValid() && passport.isStrictValid() {
+				solution++
 			}
 			passportString = ""
 		}
@@ -73,79 +62,62 @@ func solvePartTwo(lines []string) {
 }
 
 func (p *Passport) passportSerialization(lines string) {
-	p.complete = strings.Split(lines, " ")
-
-	for _, field := range p.complete {
+	passport := strings.Split(lines, " ")
+	fields := make(map[string]string)
+	for _, field := range passport[1:] {
 		fieldStructure := strings.Split(field, ":")
 		fieldType := fieldStructure[0]
-		//p.fields[fieldType] = fieldStructure[1] Usare la mappa risolverrebe un sacco di cose la devo guardare per bene
-		switch fieldType {
-		case "byr":
-			p.byr = fieldStructure[1]
-		case "iyr":
-			p.iyr = fieldStructure[1]
-		case "eyr":
-			p.eyr = fieldStructure[1]
-		case "hgt":
-			p.hgt = fieldStructure[1]
-		case "hcl":
-			p.hcl = fieldStructure[1]
-		case "ecl":
-			p.ecl = fieldStructure[1]
-		case "pid":
-			p.pid = fieldStructure[1]
-		case "cid":
-			p.cid = fieldStructure[1]
-		}
+		fields[fieldType] = fieldStructure[1]
 	}
+	p.fields = fields
 }
 
-func (p *Passport) isValid(lines string) bool {
-	p.complete = strings.Split(lines, " ")
-	completeLength := len(p.complete)
-	if completeLength == 9 {
+func (p *Passport) isValid() bool {
+	fields := len(p.fields)
+	if fields == 8 {
 		return true
 	}
 
-	if completeLength == 8 {
-		return !strings.Contains(lines, "cid")
+	if fields == 7 {
+		_, exist := p.fields["cid"]
+		return !exist
 	}
 	return false
 }
 
 func (p *Passport) isStrictValid() bool {
-	byr, _ := strconv.Atoi(p.byr)
+	byr, _ := strconv.Atoi(p.fields["byr"])
 	if (byr < 1920) || (byr > 2002) {
 		return false
 	}
-	iyr, _ := strconv.Atoi(p.iyr)
+	iyr, _ := strconv.Atoi(p.fields["iyr"])
 	if (iyr < 2010) || (iyr > 2020) {
 		return false
 	}
 
-	eyr, _ := strconv.Atoi(p.eyr)
+	eyr, _ := strconv.Atoi(p.fields["eyr"])
 	if (eyr < 2020) || (eyr > 2030) {
 		return false
 	}
 
-	if strings.Contains(p.hgt, "cm") {
-		hgt, _ := strconv.Atoi(p.hgt[:len(p.hgt)-2])
+	if strings.Contains(p.fields["hgt"], "cm") {
+		hgt, _ := strconv.Atoi(p.fields["hgt"][:len(p.fields["hgt"])-2])
 		if (hgt < 150) || (hgt > 193) {
 			return false
 		}
-	} else if strings.Contains(p.hgt, "in") {
-		hgt, _ := strconv.Atoi(p.hgt[:len(p.hgt)-2])
+	} else if strings.Contains(p.fields["hgt"], "in") {
+		hgt, _ := strconv.Atoi(p.fields["hgt"][:len(p.fields["hgt"])-2])
 		if (hgt < 59) || (hgt > 76) {
 			return false
 		}
 	} else {
 		return false
 	}
-	if p.hcl[0] != '#' || len(p.hcl) != 7 {
+	if p.fields["hcl"][0] != '#' || len(p.fields["hcl"]) != 7 {
 		return false
 	}
-	if p.ecl != "amb" && p.ecl != "blu" && p.ecl != "brn" && p.ecl != "gry" && p.ecl != "grn" && p.ecl != "hzl" && p.ecl != "oth" {
+	if p.fields["ecl"] != "amb" && p.fields["ecl"] != "blu" && p.fields["ecl"] != "brn" && p.fields["ecl"] != "gry" && p.fields["ecl"] != "grn" && p.fields["ecl"] != "hzl" && p.fields["ecl"] != "oth" {
 		return false
 	}
-	return len(p.pid) == 9
+	return len(p.fields["pid"]) == 9
 }
