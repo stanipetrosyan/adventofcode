@@ -32,7 +32,7 @@ func solvePartOne(lines []string) {
 			passportString = passportString + " " + line
 		} else {
 			passport := Passport{}
-			passport.passportSerialization(passportString)
+			passport.passportSerializator(passportString)
 			if passport.isValid() {
 				solution++
 			}
@@ -51,7 +51,7 @@ func solvePartTwo(lines []string) {
 			passportString = passportString + " " + line
 		} else {
 			passport := Passport{}
-			passport.passportSerialization(passportString)
+			passport.passportSerializator(passportString)
 			if passport.isValid() && passport.isStrictValid() {
 				solution++
 			}
@@ -61,7 +61,7 @@ func solvePartTwo(lines []string) {
 	println(solution)
 }
 
-func (p *Passport) passportSerialization(lines string) {
+func (p *Passport) passportSerializator(lines string) {
 	passport := strings.Split(lines, " ")
 	fields := make(map[string]string)
 	for _, field := range passport[1:] {

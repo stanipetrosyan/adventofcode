@@ -26,7 +26,7 @@ func main() {
 func solvePartOne(lines []string) {
 	var solution = 0
 	for _, line := range lines {
-		password := serializeStringToPassword(line)
+		password := passwordSerializator(line)
 		count := strings.Count(password.value, string(password.char))
 		min, _ := strconv.Atoi(password.policy[0])
 		max, _ := strconv.Atoi(password.policy[1])
@@ -40,7 +40,7 @@ func solvePartOne(lines []string) {
 func solvePartTwo(lines []string) {
 	var solution = 0
 	for _, line := range lines {
-		password := serializeStringToPassword(line)
+		password := passwordSerializator(line)
 		start, _ := strconv.Atoi(password.policy[0])
 		end, _ := strconv.Atoi(password.policy[1])
 		if (password.value[start] == password.char) != (password.value[end] == password.char) {
@@ -50,7 +50,7 @@ func solvePartTwo(lines []string) {
 	println(solution)
 }
 
-func serializeStringToPassword(line string) Password {
+func passwordSerializator(line string) Password {
 	var password = Password{}
 	line = strings.TrimSpace(line)
 	var split = strings.Split(line, ":")
