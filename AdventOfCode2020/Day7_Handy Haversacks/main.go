@@ -44,7 +44,7 @@ func main() {
 
 	println(solution)
 
-	fmt.Println(solvePartTwo(rules, rules[MYBAG], 1, 1) - 1)
+	fmt.Println(solvePartTwo(rules, rules[MYBAG], 1) - 1)
 }
 
 func solvePartOne(rules map[string]Bag, bag Bag) int {
@@ -60,13 +60,13 @@ func solvePartOne(rules map[string]Bag, bag Bag) int {
 	return 0
 }
 
-func solvePartTwo(rules map[string]Bag, bag Bag, count int, level int) int {
+func solvePartTwo(rules map[string]Bag, bag Bag, level int) int {
 	if len(bag.contains) == 0 {
 		return level
 	}
 
 	for _, rule := range bag.contains {
-		solvePartTwo(rules, rules[rule.bag], count, level*rule.number)
+		solvePartTwo(rules, rules[rule.bag], level*rule.number)
 	}
 	return level
 }
