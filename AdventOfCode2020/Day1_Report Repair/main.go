@@ -1,17 +1,15 @@
 package main
 
 import (
-	"bufio"
+	"adventofcode/util"
 	"log"
-	"os"
 	"sort"
-	"strconv"
 )
 
 const PROBLEM = 2020
 
 func main() {
-	lines, err := convertToIntLines("./input.txt")
+	lines, err := util.ConvertToIntLines("./input.txt")
 
 	if err != nil {
 		log.Fatal(err)
@@ -40,26 +38,4 @@ func solvePartTwo(numbers []int, start int, middle int, end int) int {
 		return solvePartTwo(numbers, start, middle, end-1)
 	}
 	return solvePartTwo(numbers, start+1, start+2, end)
-}
-
-func convertToIntLines(path string) ([]int, error) {
-	file, err := os.Open(path)
-
-	if err != nil {
-		return nil, err
-	}
-
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-	scanner.Split(bufio.ScanLines)
-
-	var lines []int
-
-	for scanner.Scan() {
-		n, _ := strconv.Atoi(scanner.Text())
-		lines = append(lines, n)
-	}
-
-	return lines, nil
 }
