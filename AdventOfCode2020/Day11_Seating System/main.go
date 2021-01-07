@@ -18,11 +18,16 @@ func main() {
 	for _, line := range lines {
 		seats = append(seats, strings.Split(line, ""))
 	}
+	solve(seats, 4, false)
+	solve(seats, 5, true)
 
-	matrix, variation := anotherRound(seats)
+}
+
+func solve(seats [][]string, near int, partTwo bool) {
+	matrix, variation := anotherRound(seats, near, partTwo)
 
 	for variation == true {
-		matrix, variation = anotherRound(matrix)
+		matrix, variation = anotherRound(matrix, near, partTwo)
 	}
 	var solution int = 0
 	for _, item := range matrix {
@@ -35,17 +40,22 @@ func main() {
 	println(solution)
 }
 
-func anotherRound(seats [][]string) ([][]string, bool) {
+func anotherRound(seats [][]string, near int, partTwo bool) ([][]string, bool) {
 	round := duplicateMatrix(seats)
 	var changed bool = false
+	var adjacent int = 0
 	for row := range seats {
 		for col := range seats[row] {
-			adjacent := getAllAdjacent(seats, row, col, len(seats[row]))
+			if partTwo == false {
+				adjacent = getAllAdjacent(seats, row, col, len(seats[row]))
+			} else {
+				adjacent = getAllAdjacentInRow(seats, row, col, len(seats[row]))
+			}
 			if seats[row][col] == "L" && adjacent == 0 {
 				round[row][col] = "#"
 				changed = true
 			}
-			if seats[row][col] == "#" && adjacent >= 4 {
+			if seats[row][col] == "#" && adjacent >= near {
 				round[row][col] = "L"
 				changed = true
 			}
@@ -80,6 +90,33 @@ func getAllAdjacent(a [][]string, x, y int, lenRow int) int {
 	}
 	if isValid(x-1, y, len(a), lenRow) {
 		number += a[x-1][y]
+	}
+	return strings.Count(number, "#")
+}
+
+func getAdjacent(x, y int, dx, dy int, a [][]string, lenRow int) string {
+	if !isValid(x, y, len(a), lenRow) {
+		return "."
+	}
+
+	if a[x][y] == "." {
+		return getAdjacent(x+dx, y+dy, dx, dy, a, lenRow)
+	}
+
+	return a[x][y]
+
+}
+
+func getAllAdjacentInRow(a [][]string, x, y int, lenRow int) int {
+	var number string = ""
+	var directions []int = []int{1, 0, -1}
+
+	for _, dx := range directions {
+		for _, dy := range directions {
+			if !(dx == 0 && dy == 0) {
+				number += getAdjacent(x+dx, y+dy, dx, dy, a, lenRow)
+			}
+		}
 	}
 	return strings.Count(number, "#")
 }
